@@ -9,14 +9,13 @@
 import UIKit
 import AVKit
 
-protocol QRScanDelegate {
+protocol QRScanViewControllerDelegate {
     func handleQRScanResult(result: String);
 }
 
 class QRScanViewController: UIViewController {
     
-    var delegate: QRScanDelegate?
-
+    var delegate: QRScanViewControllerDelegate?
     
     var captureDevice: AVCaptureDevice?
     var captureInput: AVCaptureDeviceInput?
@@ -28,6 +27,11 @@ class QRScanViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let qrScanView = self.view as? QRScanView {
+            qrScanView.backBtn.addTarget(self, action: #selector(backAction(btn:)), for: UIControl.Event.touchUpInside)
+            qrScanView.torchBtn.addTarget(self, action: #selector(torchAction(btn:)), for: UIControl.Event.touchUpInside)
+            qrScanView.albumBtn.addTarget(self, action: #selector(albumAction(btn:)), for: UIControl.Event.touchUpInside)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -165,37 +169,40 @@ extension QRScanViewController: UINavigationControllerDelegate, UIImagePickerCon
         
     }
     
-//    @objc func lampAction(btn: UIButton) {
-//        if ((captureDevice?.hasTorch)!) {
-//            if (!torchTag) {
-//                try? captureDevice?.lockForConfiguration()
-//                try? captureDevice?.setTorchModeOn(level: 0.6)
-//                captureDevice?.unlockForConfiguration()
-//                torchTag = true
-//
-//                lampImgView.image = UIImage(named: ICON_SCAN_LAMPON)
-//                lampTitleLab.text = NSLocalizedString("button_title_lampon", comment: "")
-//            } else {
-//                try? captureDevice?.lockForConfiguration()
-//                captureDevice?.torchMode = .off
-//                captureDevice?.unlockForConfiguration()
-//                torchTag = false
-//                lampImgView.image = UIImage(named: ICON_SCAN_LAMPOFF)
-//                lampTitleLab.text = NSLocalizedString("button_title_lampoff", comment: "")
-//            }
-//        }
-//    }
-//
-//    @objc func albumAction(btn: UIButton) {
-//        let imageController = UIImagePickerController.init()
-//        imageController.sourceType = .photoLibrary
-//        imageController.delegate = self
-//        self.present(imageController, animated: true, completion: nil)
-//    }
+    @objc func torchAction(btn: UIButton) {
+        if ((captureDevice?.hasTorch)!) {
+            if (!torchTag) {
+                try? captureDevice?.lockForConfiguration()
+                try? captureDevice?.setTorchModeOn(level: 0.6)
+                captureDevice?.unlockForConfiguration()
+                torchTag = true
+                if let qrScanView = self.view as? QRScanView {
+                    qrScanView.torchImgView.image = UIImage(named: "scan_torch_on")
+                    qrScanView.torchTitleLab.text = NSLocalizedString("button_title_torchon", comment: "")
+                }
+            } else {
+                try? captureDevice?.lockForConfiguration()
+                captureDevice?.torchMode = .off
+                captureDevice?.unlockForConfiguration()
+                torchTag = false
+                if let qrScanView = self.view as? QRScanView {
+                    qrScanView.torchImgView.image = UIImage(named: "scan_torch_off")
+                    qrScanView.torchTitleLab.text = NSLocalizedString("button_title_torchoff", comment: "")
+                }
+            }
+        }
+    }
+
+    @objc func albumAction(btn: UIButton) {
+        let imageController = UIImagePickerController.init()
+        imageController.sourceType = .photoLibrary
+        imageController.delegate = self
+        self.present(imageController, animated: true, completion: nil)
+    }
     
     
     
-    func clickLeftButton() {
+    @objc func backAction(btn: UIButton) {
         endScan()
         self.navigationController?.popViewController(animated: true)
     }

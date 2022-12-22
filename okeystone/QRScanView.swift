@@ -13,6 +13,14 @@ import AVKit
 class QRScanView: UIView {
     
     @IBInspectable var scanView: UIImageView?
+    @IBInspectable var torchBtn: UIButton!
+    @IBInspectable var torchImgView: UIImageView!
+    @IBInspectable var torchTitleLab: UILabel!
+    @IBInspectable var albumBtn: UIButton!
+    @IBInspectable var backBtn: UIButton!
+    
+    
+    var torchTag = false
     
     lazy var interestRect: CGRect = {
         let screenWidth = self.frame.width
@@ -72,9 +80,9 @@ class QRScanView: UIView {
         let path1 = UIBezierPath.init(rect: self.interestRect).reversing()
         path.append(path1)
         maskLayer.path = path.cgPath
-
+        
         coverLayer.mask = maskLayer
-
+        
         self.layer.addSublayer(coverLayer)
     }
     
@@ -105,22 +113,22 @@ class QRScanView: UIView {
     func setupButtonView() {
         let width: CGFloat = self.frame.width
         let height: CGFloat = 100
-
+        
         var x: CGFloat = width / 4
         let y: CGFloat = self.frame.height - height / 2
-
+        
         let backView = makeButtonView(tag: 0,
                                       title: NSLocalizedString("button_title_back", comment: ""),
                                       imageName: "scan_back")
         backView.center = CGPoint(x: 50, y: 70)
         self.addSubview(backView)
-
+        
         let torchView = makeButtonView(tag: 1,
-                                      title: NSLocalizedString("button_title_torch_off", comment: ""),
-                                      imageName: "scan_torch_off")
+                                       title: NSLocalizedString("button_title_torch_off", comment: ""),
+                                       imageName: "scan_torch_off")
         torchView.center = CGPoint(x: x, y: y)
         self.addSubview(torchView)
-
+        
         x = width * 3 / 4
         let albumView = makeButtonView(tag: 2,
                                        title: NSLocalizedString("button_title_album", comment: ""),
@@ -128,37 +136,37 @@ class QRScanView: UIView {
         albumView.center = CGPoint(x: x, y: y)
         self.addSubview(albumView)
     }
-
+    
     func makeButtonView(tag: Int, title: String, imageName: String) -> UIView {
         let iconLength: CGFloat = 30
         let labHeight: CGFloat = 20
         let safeMiddle: CGFloat = 4
         let safeBoth: CGFloat = 4
         let btnLength: CGFloat = 62
-
+        
         let view = UIView.init(frame: CGRect.init(x: 0,
                                                   y: 0,
                                                   width: btnLength,
                                                   height: btnLength))
-
+        
         let imageView = UIImageView.init(image: UIImage.init(named: imageName))
         imageView.frame = CGRect(x: (btnLength - iconLength) / 2,
                                  y: safeBoth,
                                  width: iconLength,
                                  height: iconLength)
         view.addSubview(imageView)
-
+        
         let label = UILabel.init(frame: CGRect(x: 0,
-                                                  y: safeBoth + iconLength + safeMiddle,
-                                                  width: btnLength,
-                                                  height: labHeight))
+                                               y: safeBoth + iconLength + safeMiddle,
+                                               width: btnLength,
+                                               height: labHeight))
         label.text = NSLocalizedString(title, comment: "")
         label.textAlignment = NSTextAlignment.center
         label.textColor = UIColor.white
         label.font = UIFont(name: label.font.fontName, size: 14)
         //titleLab.adjustsFontSizeToFitWidth = true
         view.addSubview(label)
-
+        
         let btn = UIButton.init(frame: CGRect.init(x: 0,
                                                    y: 0,
                                                    width: btnLength,
@@ -166,7 +174,19 @@ class QRScanView: UIView {
         btn.tag = tag
         //view.backgroundColor = UIColor.red
         view.addSubview(btn)
-
+        switch tag {
+        case 0:
+            backBtn = btn
+        case 1:
+            torchBtn = btn
+            torchImgView = imageView
+            torchTitleLab = label
+        case 2:
+            albumBtn = btn
+        default:
+            break
+        }
+        
         return view
     }
     
@@ -178,5 +198,5 @@ class QRScanView: UIView {
         setupBottomView()
         setupButtonView()
     }
-
+    
 }
