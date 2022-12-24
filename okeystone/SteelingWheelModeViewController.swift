@@ -15,6 +15,7 @@ class SteelingWheelModeViewController: UIViewController {
     
     var hostUDP = "127.0.0.1"
     var portUDP = "20131"
+    var messageId = UInt16(0)
     
     lazy var connection = PcConnectionService(hostUDP, portUDP)
     
@@ -64,6 +65,7 @@ class SteelingWheelModeViewController: UIViewController {
                     
                 }
                 if let roll = data?.attitude.roll, let pitch = data?.attitude.pitch, let yaw = data?.attitude.yaw {
+                    sendDeviceInfo()
                     sendBytes(roll, pitch, yaw)
                 }
             })
@@ -87,11 +89,23 @@ class SteelingWheelModeViewController: UIViewController {
     }
     
     private func sendBytes(_ roll: Double, _ pitch: Double, _ yaw: Double) {
-        let res: [UInt8] = [0x5A, 0x00, 0x00, 1, 21, 0x11]
-        + [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+        let header: [UInt8] = [90] + self.messageId.toLowHigh() + [1, 21, 0x11]
+        let body: [UInt8] = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         + toBytes(roll, pitch, yaw)
         + [0x00, 0x00]
-        connection.sendUDP(res)
+        messageId += 1
+        connection.sendUDP(header + body)
+    }
+    
+    private func sendDeviceInfo() {
+        let localIpBytes = [UInt8](hostUDP.utf8)
+        let header: [UInt8] = [90] + self.messageId.toLowHigh() + [2, 14, 0x11]
+        let body: [UInt8] = [0x06, 0x02, 0x11, 0x00]
+        + localIpBytes
+        + [0x22, 0x03]
+        + localIpBytes
+        messageId += 1
+        connection.sendUDP(header + body)
     }
 }
 
@@ -100,6 +114,14 @@ extension Double {
         let value =  Int16((self / .pi * 32768))
         let high = UInt8((value >> 8) & 0xff)
         let low = UInt8(value & 0xff)
+        return [low, high]
+    }
+}
+
+extension UInt16 {
+    func toLowHigh() -> [UInt8] {
+        let high = UInt8((self >> 8) & 0xff)
+        let low = UInt8(self & 0xff)
         return [low, high]
     }
 }
