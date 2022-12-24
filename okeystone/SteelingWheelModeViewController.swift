@@ -7,83 +7,99 @@
 //
 
 import UIKit
-import CoreLocation
 import Network
+import CoreMotion
+
 
 class SteelingWheelModeViewController: UIViewController {
     
-    let hostUDP: NWEndpoint.Host = "127.0.0.1"
-    let portUDP: NWEndpoint.Port = 20131
-    @IBOutlet weak var compassView: UIImageView!
-    lazy var connection = NWConnection(host: hostUDP, port: portUDP, using: .udp)
+    var hostUDP = "127.0.0.1"
+    var portUDP = "20131"
+    
+    lazy var connection = PcConnectionService(hostUDP, portUDP)
+    
+    @IBOutlet weak var iconAnimatedView: IconAnimatedView!
+    
+    lazy var animator = UIDynamicAnimator(referenceView: view)
+    
+    lazy var floatingBallBehavior = FloatingBallBehavior(in: animator)
+    
+    @IBOutlet weak var floatingBallView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if CLLocationManager.headingAvailable() {
-            locationM.startUpdatingHeading()
-        }else {
-            print("当前磁力计设备损坏")
-        }
-        
-        connection.stateUpdateHandler = { (newState) in
-            print("This is stateUpdateHandler:")
-            switch (newState) {
-            case .ready:
-                print("State: Ready\n")
-            case .setup:
-                print("State: Setup\n")
-            case .cancelled:
-                print("State: Cancelled\n")
-            case .preparing:
-                print("State: Preparing\n")
-            default:
-                print("ERROR! State not defined!\n")
-            }
-        }
-        connection.start(queue: .global(qos: .userInteractive))
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 1, options: .curveEaseInOut, animations: { [weak self] in
+            self?.iconAnimatedView.transform = CGAffineTransform.init(scaleX: 5, y: 5)
+        }, completion: nil)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if CMMotionManager.shared.isDeviceMotionAvailable {
+            floatingBallBehavior.addItem(floatingBallView)
+            floatingBallBehavior.gravityBehavior.magnitude = 100
+            CMMotionManager.shared.deviceMotionUpdateInterval = 1/60
+            CMMotionManager.shared.startDeviceMotionUpdates(to: .main, withHandler: { [self] (data, error) in
+                if let gravityX = data?.gravity.x, let gravityY = data?.gravity.y {
+                    if gravityX != 0 && gravityY != 0 {
+                        var xy = 0.0;
+                        switch UIDevice.current.orientation {
+                        case .portrait:
+                            xy = atan2(gravityX, gravityY)
+                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: gravityX, dy: gravityY))
+                        case .portraitUpsideDown: break
+                        case .landscapeRight:
+                            xy = atan2(-gravityY, gravityX)
+                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: -gravityY, dy: gravityX))
+                        case .landscapeLeft:
+                            xy = atan2(gravityY, -gravityX)
+                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: gravityY, dy: -gravityX))
+                        default:
+                            xy = atan2(gravityX, gravityY)
+                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: gravityX, dy: gravityY))
+                        }
+                        //计算相对于y轴的重力方向
+                        self.floatingBallBehavior.gravityBehavior.angle = xy - .pi / 2;
+                    }
+                    
+                }
+                if let roll = data?.attitude.roll, let pitch = data?.attitude.pitch, let yaw = data?.attitude.yaw {
+                    sendBytes(roll, pitch, yaw)
+                }
+            })
+        }
+    }
+    
+    // turn off the accelerometer
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        floatingBallBehavior.gravityBehavior.magnitude = 0
+        CMMotionManager.shared.stopDeviceMotionUpdates()
     }
     
-    func sendUDP(_ msg:String){
-        let contentToSend=msg.data(using: String.Encoding.utf8)
-        connection.send(content: contentToSend, completion: NWConnection.SendCompletion.contentProcessed({(NWError) in
-            if NWError==nil{
-                print("Data was sent to UDP")
-            }else{
-                print("ERROR! Error when data (Type: Data) sending. NWError: \n \(NWError!)")
-            }
-        }))
+    private func toBytes(_ roll: Double, _ pitch: Double, _ yaw: Double) -> [UInt8] {
+        var res = [UInt8] ()
+        res.append(contentsOf: roll.toLowHigh())
+        res.append(contentsOf: pitch.toLowHigh())
+        res.append(contentsOf: yaw.toLowHigh())
+        return res
     }
     
-    lazy var locationM: CLLocationManager = {
-        let locationM = CLLocationManager.shared
-        locationM.delegate = self
-        return locationM
-    }()
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    private func sendBytes(_ roll: Double, _ pitch: Double, _ yaw: Double) {
+        let res: [UInt8] = [0x5A, 0x00, 0x00, 1, 21, 0x11]
+        + [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+        + toBytes(roll, pitch, yaw)
+        + [0x00, 0x00]
+        connection.sendUDP(res)
+    }
 }
-extension SteelingWheelModeViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        print(newHeading)
-        let angle = newHeading.magneticHeading//拿到当前设备朝向 0- 359.9 角度
-        let arc = CGFloat(angle / 180 * Double.pi)//角度转换成为弧度
-        UIView.animate(withDuration: 0.5, animations: {
-            self.compassView.transform = CGAffineTransform(rotationAngle: -arc)
-        })
-        sendUDP("\(arc)")
+
+extension Double {
+    func toLowHigh() -> [UInt8] {
+        let value =  Int16((self / .pi * 32768))
+        let high = UInt8((value >> 8) & 0xff)
+        let low = UInt8(value & 0xff)
+        return [low, high]
     }
 }

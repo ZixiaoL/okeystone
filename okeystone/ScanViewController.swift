@@ -9,13 +9,13 @@
 import UIKit
 import AVKit
 
-protocol QRScanViewControllerDelegate {
+protocol ScanViewControllerDelegate {
     func handleQRScanResult(result: String);
 }
 
-class QRScanViewController: UIViewController {
+class ScanViewController: UIViewController {
     
-    var delegate: QRScanViewControllerDelegate?
+    var delegate: ScanViewControllerDelegate?
     
     var captureDevice: AVCaptureDevice?
     var captureInput: AVCaptureDeviceInput?
@@ -24,18 +24,12 @@ class QRScanViewController: UIViewController {
     var capturePreView: AVCaptureVideoPreviewLayer?
 
     var torchTag = false
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        if let qrScanView = self.view as? QRScanView {
-            qrScanView.backBtn.addTarget(self, action: #selector(backAction(btn:)), for: UIControl.Event.touchUpInside)
-            qrScanView.torchBtn.addTarget(self, action: #selector(torchAction(btn:)), for: UIControl.Event.touchUpInside)
-            qrScanView.albumBtn.addTarget(self, action: #selector(albumAction(btn:)), for: UIControl.Event.touchUpInside)
-        }
-    }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        if let scanView = self.view as? ScanView {
+            scanView.torchBtn.addTarget(self, action: #selector(torchAction(btn:)), for: UIControl.Event.touchUpInside)
+            scanView.albumBtn.addTarget(self, action: #selector(albumAction(btn:)), for: UIControl.Event.touchUpInside)
+        }
         setupCaptureSession()
         startScan()
     }
@@ -102,7 +96,9 @@ class QRScanViewController: UIViewController {
         
         captureSession?.startRunning()
         
-        let rect = capturePreView!.metadataOutputRectConverted(fromLayerRect: (self.view as? QRScanView)!.interestRect)
+        let scanView = self.view as! ScanView
+        
+        let rect = capturePreView!.metadataOutputRectConverted(fromLayerRect: scanView.interestRect)
         
         mataOutput?.rectOfInterest = rect
         
@@ -111,7 +107,7 @@ class QRScanViewController: UIViewController {
 
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
 // 扫描到数据后调用
-extension QRScanViewController: AVCaptureMetadataOutputObjectsDelegate {
+extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         if (metadataObjects.count == 0) {
             return
@@ -129,14 +125,12 @@ extension QRScanViewController: AVCaptureMetadataOutputObjectsDelegate {
         if self.delegate != nil {
             self.delegate?.handleQRScanResult(result: result!)
         }
-        
-        self.navigationController?.popViewController(animated: true)
     }
 }
 
 // MARK: - UINavigationControllerDelegate UIImagePickerControllerDelegate
 // 相册获取的照片进行处理
-extension QRScanViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+extension ScanViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true) {
             
@@ -170,25 +164,21 @@ extension QRScanViewController: UINavigationControllerDelegate, UIImagePickerCon
     }
     
     @objc func torchAction(btn: UIButton) {
-        if ((captureDevice?.hasTorch)!) {
+        if let scanView = self.view as? ScanView, (captureDevice?.hasTorch)! {
             if (!torchTag) {
                 try? captureDevice?.lockForConfiguration()
                 try? captureDevice?.setTorchModeOn(level: 0.6)
                 captureDevice?.unlockForConfiguration()
                 torchTag = true
-                if let qrScanView = self.view as? QRScanView {
-                    qrScanView.torchImgView.image = UIImage(named: "scan_torch_on")
-                    qrScanView.torchTitleLab.text = NSLocalizedString("button_title_torchon", comment: "")
-                }
+                    scanView.torchImgView.image = UIImage(named: "scan_torch_on")
+                scanView.torchTitleLab.text = NSLocalizedString("button_title_torchon", comment: "")
             } else {
                 try? captureDevice?.lockForConfiguration()
                 captureDevice?.torchMode = .off
                 captureDevice?.unlockForConfiguration()
                 torchTag = false
-                if let qrScanView = self.view as? QRScanView {
-                    qrScanView.torchImgView.image = UIImage(named: "scan_torch_off")
-                    qrScanView.torchTitleLab.text = NSLocalizedString("button_title_torchoff", comment: "")
-                }
+                scanView.torchImgView.image = UIImage(named: "scan_torch_off")
+                scanView.torchTitleLab.text = NSLocalizedString("button_title_torchoff", comment: "")
             }
         }
     }
@@ -198,13 +188,6 @@ extension QRScanViewController: UINavigationControllerDelegate, UIImagePickerCon
         imageController.sourceType = .photoLibrary
         imageController.delegate = self
         self.present(imageController, animated: true, completion: nil)
-    }
-    
-    
-    
-    @objc func backAction(btn: UIButton) {
-        endScan()
-        self.navigationController?.popViewController(animated: true)
     }
     
 }

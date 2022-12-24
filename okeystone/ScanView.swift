@@ -10,14 +10,13 @@ import UIKit
 import AVKit
 
 @IBDesignable
-class QRScanView: UIView {
+class ScanView: UIView {
     
-    @IBInspectable var scanView: UIImageView?
-    @IBInspectable var torchBtn: UIButton!
-    @IBInspectable var torchImgView: UIImageView!
-    @IBInspectable var torchTitleLab: UILabel!
-    @IBInspectable var albumBtn: UIButton!
-    @IBInspectable var backBtn: UIButton!
+    var centerView: UIImageView?
+    var torchBtn: UIButton!
+    var torchImgView: UIImageView!
+    var torchTitleLab: UILabel!
+    var albumBtn: UIButton!
     
     
     var torchTag = false
@@ -36,12 +35,12 @@ class QRScanView: UIView {
     }()
     
     func setupScanLine() {
-        scanView = UIImageView.init(frame: CGRect(x: self.interestRect.origin.x+1,
+        centerView = UIImageView.init(frame: CGRect(x: self.interestRect.origin.x+1,
                                                   y: self.interestRect.origin.y+1,
                                                   width: self.interestRect.size.width-2,
                                                   height: 3))
         //scanView!.backgroundColor = UIColor.white
-        scanView?.image = UIImage(named: "scan_line")
+        centerView?.image = UIImage(named: "scan_line")
         let animation = CABasicAnimation.init(keyPath: "transform.translation.y")
         animation.fromValue = 0
         animation.toValue = interestRect.size.height
@@ -49,8 +48,8 @@ class QRScanView: UIView {
         animation.duration = 3
         animation.isRemovedOnCompletion = false
         animation.repeatCount = MAXFLOAT
-        scanView?.layer.add(animation, forKey: "y_transaltion")
-        self.addSubview(scanView!)
+        centerView?.layer.add(animation, forKey: "y_transaltion")
+        self.addSubview(centerView!)
         
     }
     
@@ -117,12 +116,6 @@ class QRScanView: UIView {
         var x: CGFloat = width / 4
         let y: CGFloat = self.frame.height - height / 2
         
-        let backView = makeButtonView(tag: 0,
-                                      title: NSLocalizedString("button_title_back", comment: ""),
-                                      imageName: "scan_back")
-        backView.center = CGPoint(x: 50, y: 70)
-        self.addSubview(backView)
-        
         let torchView = makeButtonView(tag: 1,
                                        title: NSLocalizedString("button_title_torch_off", comment: ""),
                                        imageName: "scan_torch_off")
@@ -175,8 +168,6 @@ class QRScanView: UIView {
         //view.backgroundColor = UIColor.red
         view.addSubview(btn)
         switch tag {
-        case 0:
-            backBtn = btn
         case 1:
             torchBtn = btn
             torchImgView = imageView

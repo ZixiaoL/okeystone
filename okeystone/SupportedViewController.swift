@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import Network
 
-class SupportedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SupportedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+    
+    private var scanResult: ScanResult?
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 3;
@@ -40,27 +43,61 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var instructions: UITableView!
     
+    @IBOutlet weak var ipPortTextField: UITextField! {
+        didSet {
+            ipPortTextField.delegate = self
+        }
+    }
+    
+    var resignationHandler: (() -> Void)?
+    
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        resignationHandler?()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 3, delay: 1, options: .curveEaseInOut, animations: { [weak self] in
-            self?.iconAnimatedView.transform = CGAffineTransform.init(scaleX: 2, y: 2)
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 1, options: .curveEaseInOut, animations: { [weak self] in
+            self?.iconAnimatedView.transform = CGAffineTransform.init(scaleX: 10, y: 10)
             }, completion: nil)
         instructions.delegate = self
         instructions.dataSource = self
     }
     
-    @IBAction func scanAction(_ sender: UIButton) {
-        let vc = QRScanViewController()
-        vc.delegate = self
-        self.navigationController?.pushViewController(vc, animated: true)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+        case "showChooseMode":
+            let vc = segue.destination as? ChooseModeViewController
+            let ipAndPort = ipPortTextField.text!.split(separator: ":")
+            vc?.hostUDP = String(ipAndPort[0])
+            vc?.portUDP = String(ipAndPort[1])
+            break
+        case "showScanView":
+            let vc = segue.destination as? ScanViewController
+            vc?.delegate = self
+            break
+        default:
+            break
+        }
     }
 }
 
 // MARK: - QRScanDelegate
-extension SupportedViewController: QRScanViewControllerDelegate {
+extension SupportedViewController: ScanViewControllerDelegate {
     func handleQRScanResult(result: String) {
-        // PC端数据传输
-        let vc = SteelingWheelModeViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        if let res = try? JSONDecoder().decode(ScanResult.self, from: Data(result.utf8)) {
+            ipPortTextField.text = "\(res.ip):\(res.port)"
+            performSegue(withIdentifier: "showChooseMode", sender: self)
+        }
     }
+}
+
+struct ScanResult: Decodable {
+    let ip, port: String
 }

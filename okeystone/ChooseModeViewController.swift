@@ -7,26 +7,28 @@
 //
 
 import UIKit
+import Network
 
 class ChooseModeViewController: UIViewController {
 
+    var hostUDP: String?
+    var portUDP: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 1, options: .curveEaseInOut, animations: { [weak self] in
+            self?.iconAnimatedView.transform = CGAffineTransform.init(scaleX: 10, y: 10)
+            }, completion: nil)
     }
     
 
-    @IBAction func chooseMode(_ sender: UIButton) {
-    }
-    /*
-    // MARK: - Navigation
+    @IBOutlet weak var iconAnimatedView: IconAnimatedView!
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if(segue.identifier == "showSteelingWheelMode") {
+            let vc = segue.destination as? SteelingWheelModeViewController
+            vc?.hostUDP = hostUDP!
+            vc?.portUDP = portUDP!
+        }
     }
-    */
-
 }

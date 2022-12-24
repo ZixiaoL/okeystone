@@ -50,7 +50,7 @@ class IconAnimatedView: UIView, CAAnimationDelegate {
         icon.path = UIBezierPath(ovalIn: bounds.insetBy(dx: 50, dy: 50)).cgPath
         icon.strokeColor = UIColor.gray.cgColor
         icon.fillColor = UIColor.clear.cgColor
-        icon.lineWidth = 20.0
+        icon.lineWidth = 5.0
         
         
         // overlap the colors and make it 3 sets of colors

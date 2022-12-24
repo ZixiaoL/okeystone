@@ -13,11 +13,13 @@
 		DE1D8B392945B00C009008A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE1D8B372945B00C009008A8 /* Main.storyboard */; };
 		DE1D8B3B2945B010009008A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE1D8B3A2945B010009008A8 /* Assets.xcassets */; };
 		DE1D8B3E2945B010009008A8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE1D8B3C2945B010009008A8 /* LaunchScreen.storyboard */; };
-		DE49F49C2947FB7E0044C476 /* QRScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49F49B2947FB7E0044C476 /* QRScanViewController.swift */; };
+		DE3B173A2954FEF100FF1756 /* FloatingBallBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3B17392954FEF100FF1756 /* FloatingBallBehavior.swift */; };
+		DE3B173C29567A0F00FF1756 /* PcConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3B173B29567A0F00FF1756 /* PcConnectionService.swift */; };
+		DE49F49C2947FB7E0044C476 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49F49B2947FB7E0044C476 /* ScanViewController.swift */; };
 		DE49F49E2947FC630044C476 /* SupportedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49F49D2947FC630044C476 /* SupportedViewController.swift */; };
-		DE49F4A0294803580044C476 /* QRScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49F49F294803580044C476 /* QRScanView.swift */; };
+		DE49F4A0294803580044C476 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49F49F294803580044C476 /* ScanView.swift */; };
 		DE4B17D72947DCA700B95AB9 /* SteelingWheelModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B17D62947DCA700B95AB9 /* SteelingWheelModeViewController.swift */; };
-		DE4ECFB62949068800FCE6C3 /* CLLocationManager+shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4ECFB52949068800FCE6C3 /* CLLocationManager+shared.swift */; };
+		DE4ECFB62949068800FCE6C3 /* CMMotionManager+shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4ECFB52949068800FCE6C3 /* CMMotionManager+shared.swift */; };
 		DE8E4E9B294D08D7004070A9 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8E4E9A294D08D7004070A9 /* BackgroundView.swift */; };
 		DE8E4E9D294D0AE4004070A9 /* LaunchStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE8E4E9C294D0AE4004070A9 /* LaunchStoryboard.storyboard */; };
 		DE8E4E9F294D133F004070A9 /* IconAnimatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8E4E9E294D133F004070A9 /* IconAnimatedView.swift */; };
@@ -33,11 +35,13 @@
 		DE1D8B3A2945B010009008A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE1D8B3D2945B010009008A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DE1D8B3F2945B010009008A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DE49F49B2947FB7E0044C476 /* QRScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanViewController.swift; sourceTree = "<group>"; };
+		DE3B17392954FEF100FF1756 /* FloatingBallBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBallBehavior.swift; sourceTree = "<group>"; };
+		DE3B173B29567A0F00FF1756 /* PcConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PcConnectionService.swift; sourceTree = "<group>"; };
+		DE49F49B2947FB7E0044C476 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		DE49F49D2947FC630044C476 /* SupportedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportedViewController.swift; sourceTree = "<group>"; };
-		DE49F49F294803580044C476 /* QRScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanView.swift; sourceTree = "<group>"; };
+		DE49F49F294803580044C476 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		DE4B17D62947DCA700B95AB9 /* SteelingWheelModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteelingWheelModeViewController.swift; sourceTree = "<group>"; };
-		DE4ECFB52949068800FCE6C3 /* CLLocationManager+shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+shared.swift"; sourceTree = "<group>"; };
+		DE4ECFB52949068800FCE6C3 /* CMMotionManager+shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotionManager+shared.swift"; sourceTree = "<group>"; };
 		DE8E4E9A294D08D7004070A9 /* BackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		DE8E4E9C294D0AE4004070A9 /* LaunchStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchStoryboard.storyboard; sourceTree = "<group>"; };
 		DE8E4E9E294D133F004070A9 /* IconAnimatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconAnimatedView.swift; sourceTree = "<group>"; };
@@ -81,15 +85,16 @@
 				DE1D8B352945B00C009008A8 /* ViewController.swift */,
 				DE1D8B3A2945B010009008A8 /* Assets.xcassets */,
 				DE1D8B3F2945B010009008A8 /* Info.plist */,
-				DE8E4EA1294D1A46004070A9 /* SupportFiles */,
 				DE8E4EA0294D1A22004070A9 /* Utilities */,
 				DEC534EA2945B8E6001535F9 /* ChooseModeViewController.swift */,
 				DE4B17D62947DCA700B95AB9 /* SteelingWheelModeViewController.swift */,
-				DE49F49B2947FB7E0044C476 /* QRScanViewController.swift */,
+				DE49F49B2947FB7E0044C476 /* ScanViewController.swift */,
 				DE49F49D2947FC630044C476 /* SupportedViewController.swift */,
-				DE49F49F294803580044C476 /* QRScanView.swift */,
-				DE4ECFB52949068800FCE6C3 /* CLLocationManager+shared.swift */,
+				DE49F49F294803580044C476 /* ScanView.swift */,
+				DE4ECFB52949068800FCE6C3 /* CMMotionManager+shared.swift */,
 				DE8E4E9C294D0AE4004070A9 /* LaunchStoryboard.storyboard */,
+				DE3B17392954FEF100FF1756 /* FloatingBallBehavior.swift */,
+				DE3B173B29567A0F00FF1756 /* PcConnectionService.swift */,
 			);
 			path = okeystone;
 			sourceTree = "<group>";
@@ -101,13 +106,6 @@
 				DE8E4E9E294D133F004070A9 /* IconAnimatedView.swift */,
 			);
 			path = Utilities;
-			sourceTree = "<group>";
-		};
-		DE8E4EA1294D1A46004070A9 /* SupportFiles */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SupportFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,15 +181,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE8E4E9B294D08D7004070A9 /* BackgroundView.swift in Sources */,
-				DE49F49C2947FB7E0044C476 /* QRScanViewController.swift in Sources */,
-				DE4ECFB62949068800FCE6C3 /* CLLocationManager+shared.swift in Sources */,
+				DE49F49C2947FB7E0044C476 /* ScanViewController.swift in Sources */,
+				DE3B173C29567A0F00FF1756 /* PcConnectionService.swift in Sources */,
+				DE4ECFB62949068800FCE6C3 /* CMMotionManager+shared.swift in Sources */,
 				DE8E4E9F294D133F004070A9 /* IconAnimatedView.swift in Sources */,
+				DE3B173A2954FEF100FF1756 /* FloatingBallBehavior.swift in Sources */,
 				DE49F49E2947FC630044C476 /* SupportedViewController.swift in Sources */,
 				DE4B17D72947DCA700B95AB9 /* SteelingWheelModeViewController.swift in Sources */,
 				DE1D8B362945B00C009008A8 /* ViewController.swift in Sources */,
 				DE1D8B322945B00C009008A8 /* AppDelegate.swift in Sources */,
 				DEC534EB2945B8E6001535F9 /* ChooseModeViewController.swift in Sources */,
-				DE49F4A0294803580044C476 /* QRScanView.swift in Sources */,
+				DE49F4A0294803580044C476 /* ScanView.swift in Sources */,
 				DE1D8B342945B00C009008A8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

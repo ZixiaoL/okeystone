@@ -6,8 +6,8 @@
 //  Copyright © 2022 Zixiao Li. All rights reserved.
 //
 
-import CoreLocation
+import CoreMotion
 
-extension CLLocationManager {
-    static var shared = CLLocationManager()
+extension CMMotionManager {
+    static var shared = CMMotionManager()
 }
