@@ -9,7 +9,7 @@
 import UIKit
 import Network
 
-class SupportedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class SupportedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UISplitViewControllerDelegate {
     
     private var scanResult: ScanResult?
     
@@ -38,9 +38,6 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    
-    @IBOutlet weak var iconAnimatedView: IconAnimatedView!
-    
     @IBOutlet weak var instructions: UITableView!
     
     @IBOutlet weak var ipPortTextField: UITextField! {
@@ -61,11 +58,16 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
         return true
     }
     
+    override func awakeFromNib() {
+        splitViewController?.delegate = self
+    }
+    
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+            return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 1, options: .curveEaseInOut, animations: { [weak self] in
-            self?.iconAnimatedView.transform = CGAffineTransform.init(scaleX: 10, y: 10)
-            }, completion: nil)
         instructions.delegate = self
         instructions.dataSource = self
     }

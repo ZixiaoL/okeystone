@@ -19,8 +19,6 @@ class SteelingWheelModeViewController: UIViewController {
     
     lazy var connection = PcConnectionService(hostUDP, portUDP)
     
-    @IBOutlet weak var iconAnimatedView: IconAnimatedView!
-    
     lazy var animator = UIDynamicAnimator(referenceView: view)
     
     lazy var floatingBallBehavior = FloatingBallBehavior(in: animator)
@@ -29,9 +27,6 @@ class SteelingWheelModeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 1, options: .curveEaseInOut, animations: { [weak self] in
-            self?.iconAnimatedView.transform = CGAffineTransform.init(scaleX: 5, y: 5)
-        }, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {

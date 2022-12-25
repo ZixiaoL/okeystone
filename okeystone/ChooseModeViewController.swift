@@ -16,13 +16,8 @@ class ChooseModeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 1, options: .curveEaseInOut, animations: { [weak self] in
-            self?.iconAnimatedView.transform = CGAffineTransform.init(scaleX: 10, y: 10)
-            }, completion: nil)
     }
     
-
-    @IBOutlet weak var iconAnimatedView: IconAnimatedView!
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "showSteelingWheelMode") {
