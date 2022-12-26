@@ -77,8 +77,7 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
         case "showChooseMode":
             let vc = segue.destination as? ChooseModeViewController
             let ipAndPort = ipPortTextField.text!.split(separator: ":")
-            vc?.hostUDP = String(ipAndPort[0])
-            vc?.portUDP = String(ipAndPort[1])
+            vc?.scanResult = ScanResult(ip: String(ipAndPort[0]), port: String(ipAndPort[1]))
             break
         case "showScanView":
             let vc = segue.destination as? ScanViewController
@@ -95,6 +94,7 @@ extension SupportedViewController: ScanViewControllerDelegate {
     func handleQRScanResult(result: String) {
         if let res = try? JSONDecoder().decode(ScanResult.self, from: Data(result.utf8)) {
             ipPortTextField.text = "\(res.ip):\(res.port)"
+            navigationController?.popViewController(animated: true)
             performSegue(withIdentifier: "showChooseMode", sender: self)
         }
     }

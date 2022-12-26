@@ -20,6 +20,7 @@
 		DE49F4A0294803580044C476 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49F49F294803580044C476 /* ScanView.swift */; };
 		DE4B17D72947DCA700B95AB9 /* SteelingWheelModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B17D62947DCA700B95AB9 /* SteelingWheelModeViewController.swift */; };
 		DE4ECFB62949068800FCE6C3 /* CMMotionManager+shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4ECFB52949068800FCE6C3 /* CMMotionManager+shared.swift */; };
+		DE6DC951295915F60098E01F /* ChooseModePopOverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DC950295915F60098E01F /* ChooseModePopOverViewController.swift */; };
 		DE8E4E9B294D08D7004070A9 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8E4E9A294D08D7004070A9 /* BackgroundView.swift */; };
 		DE8E4E9D294D0AE4004070A9 /* LaunchStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE8E4E9C294D0AE4004070A9 /* LaunchStoryboard.storyboard */; };
 		DEC534EB2945B8E6001535F9 /* ChooseModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC534EA2945B8E6001535F9 /* ChooseModeViewController.swift */; };
@@ -41,6 +42,7 @@
 		DE49F49F294803580044C476 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		DE4B17D62947DCA700B95AB9 /* SteelingWheelModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteelingWheelModeViewController.swift; sourceTree = "<group>"; };
 		DE4ECFB52949068800FCE6C3 /* CMMotionManager+shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotionManager+shared.swift"; sourceTree = "<group>"; };
+		DE6DC950295915F60098E01F /* ChooseModePopOverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseModePopOverViewController.swift; sourceTree = "<group>"; };
 		DE8E4E9A294D08D7004070A9 /* BackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		DE8E4E9C294D0AE4004070A9 /* LaunchStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchStoryboard.storyboard; sourceTree = "<group>"; };
 		DEC534EA2945B8E6001535F9 /* ChooseModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseModeViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				DE8E4E9C294D0AE4004070A9 /* LaunchStoryboard.storyboard */,
 				DE3B17392954FEF100FF1756 /* FloatingBallBehavior.swift */,
 				DE3B173B29567A0F00FF1756 /* PcConnectionService.swift */,
+				DE6DC950295915F60098E01F /* ChooseModePopOverViewController.swift */,
 			);
 			path = okeystone;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 			files = (
 				DE8E4E9B294D08D7004070A9 /* BackgroundView.swift in Sources */,
 				DE49F49C2947FB7E0044C476 /* ScanViewController.swift in Sources */,
+				DE6DC951295915F60098E01F /* ChooseModePopOverViewController.swift in Sources */,
 				DE3B173C29567A0F00FF1756 /* PcConnectionService.swift in Sources */,
 				DE4ECFB62949068800FCE6C3 /* CMMotionManager+shared.swift in Sources */,
 				DE3B173A2954FEF100FF1756 /* FloatingBallBehavior.swift in Sources */,
