@@ -9,7 +9,14 @@
 import UIKit
 import Network
 
-class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate {
+class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, ChooseModePopOverViewControllerDelegate {
+    
+    func handleModes(modeIndex: Int) {
+        if(modeIndex == 3) {
+            performSegue(withIdentifier: "showSteelingWheelModeViewController", sender: self)
+        }
+    }
+    
 
     var scanResult: ScanResult?
     
@@ -58,13 +65,13 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if(segue.identifier == "popOverChooseMode") {
-            if let destination = segue.destination as? ChooseModePopOverViewController {
-                // if we're in a popover set ourselves as the delegate
-                // so we can control the adaptation behavior to compact environments
-//                    destination.delegate = self
-                    // we could do other popover configuration here too
-                
+        if(segue.identifier == "showSteelingWheelModeViewController") {
+            if let vc = segue.destination as? SteelingWheelModeViewController{
+                vc.scanResult = scanResult
+            }
+        } else if (segue.identifier == "popOverChooseModePopOverViewController") {
+            if let vc = segue.destination as? ChooseModePopOverViewController{
+                vc.delegate = self
             }
         }
     }

@@ -26,6 +26,7 @@ class ScanViewController: UIViewController {
     var torchTag = false
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         if let scanView = self.view as? ScanView {
             scanView.torchBtn.addTarget(self, action: #selector(torchAction(btn:)), for: UIControl.Event.touchUpInside)
             scanView.albumBtn.addTarget(self, action: #selector(albumAction(btn:)), for: UIControl.Event.touchUpInside)
@@ -61,6 +62,9 @@ class ScanViewController: UIViewController {
     }
     
     func setupCaptureSession() {
+        if(captureSession != nil) {
+            return
+        }
         captureDevice = AVCaptureDevice.default(for: AVMediaType.video)
         
         do {
@@ -89,7 +93,6 @@ class ScanViewController: UIViewController {
         mataOutput?.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
         
         capturePreView = AVCaptureVideoPreviewLayer.init(session: captureSession!)
-        //capturePreView?.videoGravity = AVLayerVideoGravityResizeAspectFill
         capturePreView?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         capturePreView?.frame = self.view.frame
         self.view.layer.insertSublayer(capturePreView!, at: 0)
@@ -154,7 +157,6 @@ extension ScanViewController: UINavigationControllerDelegate, UIImagePickerContr
                     if (self.delegate != nil) {
                         self.delegate?.handleQRScanResult(result: qrFeture.messageString!)
                     }
-                    self.navigationController?.popViewController(animated: true)
                 }
             } else {
                 print("没有检测到二维码")

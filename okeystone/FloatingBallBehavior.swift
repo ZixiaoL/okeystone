@@ -43,7 +43,7 @@ class FloatingBallBehavior: UIDynamicBehavior
         if let referenceBounds = dynamicAnimator?.referenceView?.bounds {
             let center = CGPoint(x: referenceBounds.midX, y: referenceBounds.midY)
             attachmentBehavior = UIAttachmentBehavior(item: item, attachedToAnchor: center)
-            attachmentBehavior?.length = 100
+            attachmentBehavior?.length = 120
             addChildBehavior(attachmentBehavior!)
         }
         itemBehavior.addItem(item)

@@ -77,7 +77,7 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
         case "showChooseMode":
             let vc = segue.destination as? ChooseModeViewController
             let ipAndPort = ipPortTextField.text!.split(separator: ":")
-            vc?.scanResult = ScanResult(ip: String(ipAndPort[0]), port: String(ipAndPort[1]))
+            vc?.scanResult = ScanResult(ssid: "unknown", password: "unknown", ip: String(ipAndPort[0]), port: String(ipAndPort[1]))
             break
         case "showScanView":
             let vc = segue.destination as? ScanViewController
@@ -101,5 +101,5 @@ extension SupportedViewController: ScanViewControllerDelegate {
 }
 
 struct ScanResult: Decodable {
-    let ip, port: String
+    let ssid, password, ip, port: String
 }

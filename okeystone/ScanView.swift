@@ -99,7 +99,7 @@ class ScanView: UIView {
     
     func setupBottomView() {
         let width: CGFloat = self.frame.width
-        let height: CGFloat = 100
+        let height: CGFloat = 150
         let x: CGFloat = 0
         let y: CGFloat = self.frame.height - height
         
@@ -114,7 +114,7 @@ class ScanView: UIView {
         let height: CGFloat = 100
         
         var x: CGFloat = width / 4
-        let y: CGFloat = self.frame.height - height / 2
+        let y: CGFloat = self.frame.height - height
         
         let torchView = makeButtonView(tag: 1,
                                        title: NSLocalizedString("button_title_torch_off", comment: ""),

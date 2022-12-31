@@ -13,11 +13,10 @@ import CoreMotion
 
 class SteelingWheelModeViewController: UIViewController {
     
-    var hostUDP = "127.0.0.1"
-    var portUDP = "20131"
+    var scanResult: ScanResult?
     var messageId = UInt16(0)
     
-    lazy var connection = PcConnectionService(hostUDP, portUDP)
+    lazy var connection = PcConnectionService(scanResult!.ip, scanResult!.port)
     
     lazy var animator = UIDynamicAnimator(referenceView: view)
     
@@ -29,42 +28,99 @@ class SteelingWheelModeViewController: UIViewController {
         super.viewDidLoad()
     }
     
+    @IBOutlet weak var cover: UIView!
+    
+    @IBOutlet weak var countdown3: UIImageView!
+    
+    @IBOutlet weak var countdown2: UIImageView!
+    
+    @IBOutlet weak var countdown1: UIImageView!
+    
+    @IBOutlet weak var countdownCompleted: UIImageView!
+    
+    
+    @IBAction func startSync(_ sender: UIButton) {
+        if(sender.currentTitle == "开始同步数据") {
+            sender.setTitle("暂停", for: .normal)
+            cover.isHidden = false
+            countdown3.isHidden = false
+            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+                self?.countdown3.alpha = 0
+            }) { [weak self] UIViewAnimatingPosition in
+                self?.countdown3.isHidden = true
+                self?.countdown3.alpha = 1
+                self?.countdown2.isHidden = false
+                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
+                    self?.countdown2.alpha = 0
+                }) {UIViewAnimatingPosition in
+                    self?.countdown2.isHidden = true
+                    self?.countdown2.alpha = 1
+                    self?.countdown1.isHidden = false
+                    UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
+                        self?.countdown1.alpha = 0
+                    }) {UIViewAnimatingPosition in
+                        self?.countdown1.isHidden = true
+                        self?.countdown1.alpha = 1
+                        self?.countdownCompleted.isHidden = false
+                        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
+                            self?.countdownCompleted.alpha = 0
+
+                        }) {
+                            UIViewAnimatingPosition in
+                            self?.countdownCompleted.isHidden = true
+                            self?.countdownCompleted.alpha = 1
+                            self?.cover.isHidden = true
+                        }}}}
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
+                if CMMotionManager.shared.isDeviceMotionAvailable {
+                    self?.sendDeviceInfo()
+                    self?.floatingBallBehavior.addItem(self!.floatingBallView)
+                    self?.floatingBallBehavior.gravityBehavior.magnitude = 100
+                    CMMotionManager.shared.deviceMotionUpdateInterval = 1/60
+                    CMMotionManager.shared.startDeviceMotionUpdates(to: .main, withHandler: { [weak self] (data, error) in
+                        if let gravityX = data?.gravity.x, let gravityY = data?.gravity.y {
+                            if gravityX != 0 && gravityY != 0 {
+                                var xy = 0.0;
+                                switch UIDevice.current.orientation {
+                                case .portrait:
+                                    xy = atan2(gravityX, gravityY)
+                                    self?.floatingBallBehavior.push(self!.floatingBallView, CGVector(dx: gravityX, dy: gravityY))
+                                case .portraitUpsideDown: break
+                                case .landscapeRight:
+                                    xy = atan2(-gravityY, gravityX)
+                                    self?.floatingBallBehavior.push(self!.floatingBallView, CGVector(dx: -gravityY, dy: gravityX))
+                                case .landscapeLeft:
+                                    xy = atan2(gravityY, -gravityX)
+                                    self?.floatingBallBehavior.push(self!.floatingBallView, CGVector(dx: gravityY, dy: -gravityX))
+                                default:
+                                    xy = atan2(gravityX, gravityY)
+                                    self?.floatingBallBehavior.push(self!.floatingBallView, CGVector(dx: gravityX, dy: gravityY))
+                                }
+                                //计算相对于y轴的重力方向
+                                self?.floatingBallBehavior.gravityBehavior.angle = xy - .pi / 2;
+                                var length = 120*sqrt(gravityX*gravityX+gravityY*gravityY)
+                                print("length: \(length)")
+                                self?.floatingBallBehavior.attachmentBehavior?.length = length
+                            }
+                            
+                        }
+                        if let roll = data?.attitude.roll, let pitch = data?.attitude.pitch, let yaw = data?.attitude.yaw {
+                            print("roll: \(roll) pitch: \(-pitch) yaw: \(yaw)")
+                            self?.sendBytes(roll, -pitch, yaw)
+                        }
+                    })
+                }
+            }
+        } else {
+            sender.setTitle("开始同步数据", for: .normal)
+            floatingBallBehavior.removeItem(self.floatingBallView)
+            CMMotionManager.shared.stopDeviceMotionUpdates()
+        }
+        
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if CMMotionManager.shared.isDeviceMotionAvailable {
-            floatingBallBehavior.addItem(floatingBallView)
-            floatingBallBehavior.gravityBehavior.magnitude = 100
-            CMMotionManager.shared.deviceMotionUpdateInterval = 1/60
-            CMMotionManager.shared.startDeviceMotionUpdates(to: .main, withHandler: { [self] (data, error) in
-                if let gravityX = data?.gravity.x, let gravityY = data?.gravity.y {
-                    if gravityX != 0 && gravityY != 0 {
-                        var xy = 0.0;
-                        switch UIDevice.current.orientation {
-                        case .portrait:
-                            xy = atan2(gravityX, gravityY)
-                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: gravityX, dy: gravityY))
-                        case .portraitUpsideDown: break
-                        case .landscapeRight:
-                            xy = atan2(-gravityY, gravityX)
-                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: -gravityY, dy: gravityX))
-                        case .landscapeLeft:
-                            xy = atan2(gravityY, -gravityX)
-                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: gravityY, dy: -gravityX))
-                        default:
-                            xy = atan2(gravityX, gravityY)
-                            self.floatingBallBehavior.push(self.floatingBallView, CGVector(dx: gravityX, dy: gravityY))
-                        }
-                        //计算相对于y轴的重力方向
-                        self.floatingBallBehavior.gravityBehavior.angle = xy - .pi / 2;
-                    }
-                    
-                }
-                if let roll = data?.attitude.roll, let pitch = data?.attitude.pitch, let yaw = data?.attitude.yaw {
-                    sendDeviceInfo()
-                    sendBytes(roll, pitch, yaw)
-                }
-            })
-        }
     }
     
     // turn off the accelerometer
@@ -93,11 +149,9 @@ class SteelingWheelModeViewController: UIViewController {
     }
     
     private func sendDeviceInfo() {
-        let localIpBytes = [UInt8](hostUDP.utf8)
-        let header: [UInt8] = [90] + self.messageId.toLowHigh() + [2, 14, 0x11]
-        let body: [UInt8] = [0x06, 0x02, 0x11, 0x00]
-        + localIpBytes
-        + [0x22, 0x03]
+        let localIpBytes = [UInt8](scanResult!.ip.utf8)
+        let header: [UInt8] = [90] + self.messageId.toLowHigh() + [2, UInt8(localIpBytes.count) + 4]
+        let body: [UInt8] = [UInt8(localIpBytes.count) + 2, 0x01, 0x11, 0x00]
         + localIpBytes
         messageId += 1
         connection.sendUDP(header + body)
