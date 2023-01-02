@@ -17,7 +17,7 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-
+    
     var scanResult: ScanResult?
     
     override func viewDidLoad() {
@@ -51,9 +51,20 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
             break
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-
+        
         // Configure content.
-        cell.detailTextLabel?.text = "placeholder"
+        switch indexPath.section {
+        case 0:
+            cell.detailTextLabel?.text = scanResult!.ssid
+        case 1:
+            cell.detailTextLabel?.text = scanResult!.ssid
+        case 2:
+            cell.detailTextLabel?.text = UIDevice.current.name
+        case 3:
+            cell.detailTextLabel?.text = "deprecated?"
+        default:
+            break
+        }
         return cell;
     }
     
@@ -63,7 +74,7 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
     ) -> UIModalPresentationStyle {
         return .none
     }
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "showSteelingWheelModeViewController") {
             if let vc = segue.destination as? SteelingWheelModeViewController{
@@ -73,6 +84,16 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
             if let vc = segue.destination as? ChooseModePopOverViewController{
                 vc.delegate = self
             }
+        }
+    }
+}
+
+// MARK: - QRScanDelegate
+extension ChooseModeViewController: ScanViewControllerDelegate {
+    func handleQRScanResult(result: String) {
+        if let res = try? JSONDecoder().decode(ScanResult.self, from: Data(result.utf8)) {
+            self.scanResult = res
+            navigationController?.popViewController(animated: true)
         }
     }
 }

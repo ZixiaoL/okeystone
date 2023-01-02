@@ -158,7 +158,7 @@ class ScanView: UIView {
         label.textColor = UIColor.white
         label.font = UIFont(name: label.font.fontName, size: 14)
         //titleLab.adjustsFontSizeToFitWidth = true
-        view.addSubview(label)
+        //view.addSubview(label)
         
         let btn = UIButton.init(frame: CGRect.init(x: 0,
                                                    y: 0,

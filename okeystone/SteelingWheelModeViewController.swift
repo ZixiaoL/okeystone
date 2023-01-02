@@ -13,7 +13,11 @@ import CoreMotion
 
 class SteelingWheelModeViewController: UIViewController {
     
-    var scanResult: ScanResult?
+    var scanResult: ScanResult? {
+        didSet {
+            connection = PcConnectionService(scanResult!.ip, scanResult!.port)
+        }
+    }
     var messageId = UInt16(0)
     
     lazy var connection = PcConnectionService(scanResult!.ip, scanResult!.port)
@@ -98,7 +102,7 @@ class SteelingWheelModeViewController: UIViewController {
                                 }
                                 //计算相对于y轴的重力方向
                                 self?.floatingBallBehavior.gravityBehavior.angle = xy - .pi / 2;
-                                var length = 120*sqrt(gravityX*gravityX+gravityY*gravityY)
+                                let length = 120*sqrt(gravityX*gravityX+gravityY*gravityY)
                                 print("length: \(length)")
                                 self?.floatingBallBehavior.attachmentBehavior?.length = length
                             }
@@ -172,5 +176,15 @@ extension UInt16 {
         let high = UInt8((self >> 8) & 0xff)
         let low = UInt8(self & 0xff)
         return [low, high]
+    }
+}
+
+// MARK: - QRScanDelegate
+extension SteelingWheelModeViewController: ScanViewControllerDelegate {
+    func handleQRScanResult(result: String) {
+        if let res = try? JSONDecoder().decode(ScanResult.self, from: Data(result.utf8)) {
+            self.scanResult = res
+            navigationController?.popViewController(animated: true)
+        }
     }
 }

@@ -13,6 +13,8 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
     
     private var scanResult: ScanResult?
     
+    @IBOutlet weak var downloadCompletedImage: UIImageView!
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 3;
     }
@@ -63,7 +65,49 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-            return true
+        return true
+    }
+    
+    @IBAction func getDownloadLink(_ sender: UIButton) {
+        DispatchQueue.main.async(execute: { () -> Void in
+            let alertController = UIAlertController(title: "下载客户端",
+                                                    message: "下载后打开客户端扫码链接手机设备",
+                                                    preferredStyle: .actionSheet)
+            
+            
+            let cancelAction = UIAlertAction(title:"取消", style: .cancel, handler:nil)
+            let copyAction = UIAlertAction(title:"复制下载地址", style: .default, handler: {
+                (action) -> Void in
+                UIPasteboard.general.string = "https://okeystone.com/"
+                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+                    self?.downloadCompletedImage.alpha = 1
+                }) { [weak self] UIViewAnimatingPosition in
+                    UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
+                        self?.downloadCompletedImage.alpha = 0
+                    })
+                }})
+            
+            let settingsAction = UIAlertAction(title:"去官网查看", style: .default, handler: {
+                (action) -> Void in
+                let url = URL(string: "https://okeystone.com/")
+                if let url = url, UIApplication.shared.canOpenURL(url) {
+                    if #available(iOS 10, *) {
+                        UIApplication.shared.open(url, options: [:],
+                                                  completionHandler: {
+                            (success) in
+                        })
+                    } else {
+                        UIApplication.shared.openURL(url)
+                    }
+                }
+            })
+            
+            alertController.addAction(cancelAction)
+            alertController.addAction(copyAction)
+            alertController.addAction(settingsAction)
+            
+            self.present(alertController, animated: true, completion: nil)
+        })
     }
     
     override func viewDidLoad() {
