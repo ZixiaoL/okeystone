@@ -25,14 +25,70 @@ class ScanViewController: UIViewController {
 
     var torchTag = false
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let cameraMediaType = AVMediaType.video
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: cameraMediaType)
+            
+        switch cameraAuthorizationStatus {
+        case .denied:
+            DispatchQueue.main.async(execute: { () -> Void in
+                let alertController = UIAlertController(title: "相机已禁用",
+                                            message: "想要使用相机扫描二维码。点击“设置”，开启相机权限。",
+                                            preferredStyle: .alert)
+                 
+                let cancelAction = UIAlertAction(title:"取消", style: .cancel, handler: { [weak self] (action) -> Void in self?.navigationController?.popViewController(animated: true)})
+                 
+                let settingsAction = UIAlertAction(title:"设置", style: .default, handler: {
+                    (action) -> Void in
+                    let url = URL(string: UIApplication.openSettingsURLString)
+                    if let url = url, UIApplication.shared.canOpenURL(url) {
+                        if #available(iOS 10, *) {
+                            UIApplication.shared.open(url, options: [:],
+                                                      completionHandler: {
+                                                        (success) in
+                            })
+                        } else {
+                            UIApplication.shared.openURL(url)
+                        }
+                    }
+                })
+                 
+                alertController.addAction(cancelAction)
+                alertController.addAction(settingsAction)
+                 
+                self.present(alertController, animated: true, completion: nil)
+            })
+        case .authorized:
+            setupCaptureSession()
+            startScan()
+        case .restricted: break
+
+        case .notDetermined:
+            // Prompting user for the permission to use the camera.
+            AVCaptureDevice.requestAccess(for: cameraMediaType) { [weak self] granted in
+                if granted {
+                    print("Granted access to \(cameraMediaType)")
+                    self?.setupCaptureSession()
+                    self?.startScan()
+                } else {
+                    print("Denied access to \(cameraMediaType)")
+                    DispatchQueue.main.async(execute: { [weak self] () -> Void in
+                        self?.navigationController?.popViewController(animated: true)
+                    })
+                }
+            }
+        @unknown default:
+            break
+        }
+    }
+  
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if let scanView = self.view as? ScanView {
             scanView.torchBtn.addTarget(self, action: #selector(torchAction(btn:)), for: UIControl.Event.touchUpInside)
             scanView.albumBtn.addTarget(self, action: #selector(albumAction(btn:)), for: UIControl.Event.touchUpInside)
         }
-        setupCaptureSession()
-        startScan()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

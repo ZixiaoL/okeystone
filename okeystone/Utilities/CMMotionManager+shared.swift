@@ -7,7 +7,12 @@
 //
 
 import CoreMotion
+import CoreLocation
 
 extension CMMotionManager {
     static var shared = CMMotionManager()
 }
+
+extension CLLocationManager {
+     static var shared = CLLocationManager()
+ }

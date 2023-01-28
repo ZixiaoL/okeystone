@@ -12,13 +12,29 @@ import Network
 class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, ChooseModePopOverViewControllerDelegate {
     
     func handleModes(modeIndex: Int) {
-        if(modeIndex == 3) {
+        switch modeIndex {
+        case 1:
+            performSegue(withIdentifier: "showUserAccelerationModeViewController", sender: self)
+        case 2:
+            performSegue(withIdentifier: "showBalanceModeViewController", sender: self)
+        case 3:
             performSegue(withIdentifier: "showSteelingWheelModeViewController", sender: self)
+        case 4:
+            performSegue(withIdentifier: "showEverythingModeViewController", sender: self)
+        default:
+            break
         }
     }
     
     
-    var scanResult: ScanResult?
+    var scanResult: ScanResult? {
+        didSet {
+            connection = PcConnectionService(scanResult!.ip, scanResult!.port)
+            sendDeviceInfo()
+        }
+    }
+    
+    lazy var connection = PcConnectionService(scanResult!.ip, scanResult!.port)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,15 +92,36 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if(segue.identifier == "showSteelingWheelModeViewController") {
-            if let vc = segue.destination as? SteelingWheelModeViewController{
-                vc.scanResult = scanResult
-            }
-        } else if (segue.identifier == "popOverChooseModePopOverViewController") {
-            if let vc = segue.destination as? ChooseModePopOverViewController{
-                vc.delegate = self
-            }
+        switch segue.identifier {
+        case "showBalanceModeViewController":
+            let vc = segue.destination as? BalanceModeViewController
+            vc?.connection = connection
+        case "showSteelingWheelModeViewController":
+            let vc = segue.destination as? SteelingWheelModeViewController
+            vc?.connection = connection
+        case "showUserAccelerationModeViewController":
+            let vc = segue.destination as? UserAccelerationViewController
+            vc?.connection = connection
+        case "showEverythingModeViewController":
+            let vc = segue.destination as? EverythingModeViewController
+            vc?.connection = connection
+        case "popOverChooseModePopOverViewController":
+            let vc = segue.destination as? ChooseModePopOverViewController
+            vc?.delegate = self
+        case "showScanView":
+            let vc = segue.destination as? ScanViewController
+            vc?.delegate = self
+        default:
+            break
         }
+    }
+    
+    private func sendDeviceInfo() {
+        let localIpBytes = [UInt8](scanResult!.ip.utf8)
+        let header: [UInt8] = [90] + self.connection.messageId.getAndIncrement().toLowHigh() + [2, UInt8(localIpBytes.count) + 4]
+        let body: [UInt8] = [UInt8(localIpBytes.count) + 2, 0x01, 0x11, 0x00]
+        + localIpBytes
+        connection.sendUDP(header + body)
     }
 }
 

@@ -2,15 +2,16 @@
 //  SteelingWheelModeViewController.swift
 //  okeystone
 //
-//  Created by Zixiao Li on 1/28/23.
-//  Copyright © 2023 Zixiao Li. All rights reserved.
+//  Created by Zixiao Li on 2022/12/13.
+//  Copyright © 2022 Zixiao Li. All rights reserved.
 //
 
 import UIKit
 import Network
-import CoreLocation
+import CoreMotion
 
-class SteelingWheelModeViewController: UIViewController {
+
+class BalanceModeViewController: UIViewController {
     
     var connection: PcConnectionService?
     
@@ -25,21 +26,19 @@ class SteelingWheelModeViewController: UIViewController {
         }
     }
     
-    var originalHeading: Double?
-    
     var timer = Timer()
     
     lazy var animator = UIDynamicAnimator(referenceView: view)
+    
+    lazy var floatingBallBehavior = FloatingBallBehavior(in: animator)
+    
+    @IBOutlet weak var floatingBallView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     @IBOutlet weak var cover: UIView!
-    
-    @IBOutlet weak var pointer: UIImageView!
-    
-    @IBOutlet weak var pointerBoard: UIImageView!
     
     @IBOutlet weak var countdown3: UIImageView!
     
@@ -76,20 +75,20 @@ class SteelingWheelModeViewController: UIViewController {
                         self?.countdownCompleted.isHidden = false
                         UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
                             self?.countdownCompleted.alpha = 0
-                            
+
                         }) {
                             UIViewAnimatingPosition in
                             self?.countdownCompleted.isHidden = true
                             self?.countdownCompleted.alpha = 1
                             self?.cover.isHidden = true
                         }}}}
-            timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(startCLLocationManager), userInfo: nil, repeats: false)
+            timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(startCMMotionManager), userInfo: nil, repeats: false)
         } else {
             isConnectionActive = false
-            CLLocationManager.shared.stopUpdatingHeading()
-            originalHeading = nil
-            self.pointer.transform = CGAffineTransform.identity
-            sendBytes(0)
+            floatingBallBehavior.gravityBehavior.magnitude = 0
+            floatingBallBehavior.removeItem(self.floatingBallView)
+            CMMotionManager.shared.stopDeviceMotionUpdates()
+            sendBytes(0, 0, 0)
         }
         
     }
@@ -103,30 +102,65 @@ class SteelingWheelModeViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         isConnectionActive = false
-        CLLocationManager.shared.stopUpdatingHeading()
-        sendBytes(0)
+        floatingBallBehavior.gravityBehavior.magnitude = 0
+        floatingBallBehavior.removeItem(self.floatingBallView)
+        CMMotionManager.shared.stopDeviceMotionUpdates()
+        sendBytes(0, 0, 0)
     }
     
-    private func sendBytes(_ direction: Double) {
+    private func toBytes(_ roll: Double, _ pitch: Double, _ yaw: Double) -> [UInt8] {
+        var res = [UInt8] ()
+        res.append(contentsOf: (roll / .pi * 32768).toLowHigh())
+        res.append(contentsOf: (pitch / .pi * 32768).toLowHigh())
+        res.append(contentsOf: (yaw / .pi * 32768).toLowHigh())
+        return res
+    }
+    
+    private func sendBytes(_ roll: Double, _ pitch: Double, _ yaw: Double) {
         if (self.connection != nil) {
             let header: [UInt8] = [90] + self.connection!.messageId.getAndIncrement().toLowHigh() + [1, 21, 0x11]
             let body: [UInt8] = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
-            + [0x00, 0x00, 0x00, 0x00]
-            + direction.toLowHigh()
+            + toBytes(roll, pitch, yaw)
             + [0x00, 0x00]
             connection!.sendUDP(header + body)
         }
     }
     
-    @objc private func startCLLocationManager() {
+    @objc private func startCMMotionManager() {
         if (!self.isConnectionActive) {
             return
         }
-        if CLLocationManager.headingAvailable() {
-            CLLocationManager.shared.delegate = self
-            CLLocationManager.shared.startUpdatingHeading()
-        }else {
-            print("当前磁力计设备损坏")
+        if CMMotionManager.shared.isDeviceMotionAvailable {
+            self.floatingBallBehavior.addItem(self.floatingBallView)
+            self.floatingBallBehavior.gravityBehavior.magnitude = 100
+            CMMotionManager.shared.deviceMotionUpdateInterval = 1/20
+            CMMotionManager.shared.startDeviceMotionUpdates(to: .main, withHandler: { [weak self] (data, error) in
+                if let gravityX = data?.gravity.x, let gravityY = data?.gravity.y {
+                    if gravityX != 0 && gravityY != 0 {
+                        var xy = 0.0;
+                        switch UIDevice.current.orientation {
+                        case .portrait:
+                            xy = atan2(gravityX, gravityY)
+                        case .portraitUpsideDown: break
+                        case .landscapeRight:
+                            xy = atan2(-gravityY, gravityX)
+                        case .landscapeLeft:
+                            xy = atan2(gravityY, -gravityX)
+                        default:
+                            xy = atan2(gravityX, gravityY)
+                        }
+                        //计算相对于y轴的重力方向
+                        self?.floatingBallBehavior.gravityBehavior.angle = xy - .pi / 2;
+                        let length = 240*sqrt(gravityX*gravityX+gravityY*gravityY)
+                        print("length: \(length)")
+                        self?.floatingBallBehavior.attachmentBehavior?.length = min(length, 120)
+                        if length > 60, let roll = data?.attitude.roll, let pitch = data?.attitude.pitch, let yaw = data?.attitude.yaw {
+                            print("roll: \(roll) pitch: \(-pitch) yaw: \(yaw)")
+                            self?.sendBytes(roll, -pitch, yaw)
+                        }
+                    }
+                }
+            })
         }
     }
     
@@ -134,45 +168,36 @@ class SteelingWheelModeViewController: UIViewController {
         switch segue.identifier {
         case "showScanView":
             let vc = segue.destination as? ScanViewController
-            vc?.delegate = self
+                vc?.delegate = self
         default:
             break
         }
     }
 }
 
+extension Double {
+    func toLowHigh() -> [UInt8] {
+        let value =  Int16(self)
+        let high = UInt8((value >> 8) & 0xff)
+        let low = UInt8(value & 0xff)
+        return [low, high]
+    }
+}
+
+extension UInt16 {
+    func toLowHigh() -> [UInt8] {
+        let high = UInt8((self >> 8) & 0xff)
+        let low = UInt8(self & 0xff)
+        return [low, high]
+    }
+}
+
 // MARK: - QRScanDelegate
-extension SteelingWheelModeViewController: ScanViewControllerDelegate {
+extension BalanceModeViewController: ScanViewControllerDelegate {
     func handleQRScanResult(result: String) {
         if let res = try? JSONDecoder().decode(ScanResult.self, from: Data(result.utf8)) {
             self.connection = PcConnectionService(res.ip, res.port)
             navigationController?.popViewController(animated: true)
-        }
-    }
-}
-
-extension SteelingWheelModeViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        print(newHeading)
-        let angle = newHeading.magneticHeading//拿到当前设备朝向 0- 359.9 角度
-        if originalHeading == nil {
-            originalHeading = angle
-        }
-        print("originalHeading: \(originalHeading!)")
-        let arc = CGFloat((angle-originalHeading!) / 180 * Double.pi)//角度转换成为弧度
-        UIView.animate(withDuration: 0.5, animations: {
-            print("radian: \(arc)")
-            let transform = CGAffineTransform(translationX: 0, y: self.pointerBoard.frame.height/3.5)
-                .rotated(by: arc)
-                .translatedBy(x: 0, y: -self.pointerBoard.frame.height/3.5)
-            self.pointer.transform = transform
-        })
-        if(angle-originalHeading! >= 180) {
-            sendBytes(angle-originalHeading!-360)
-        } else if (angle-originalHeading! < -180) {
-            sendBytes(angle-originalHeading!+360)
-        } else {
-            sendBytes(angle-originalHeading!)
         }
     }
 }

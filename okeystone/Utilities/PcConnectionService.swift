@@ -10,6 +10,9 @@ import Foundation
 import Network
 
 class PcConnectionService {
+    
+    public var messageId = MessageId()
+    
     private var connection: NWConnection
     
     init(_ host: String, _ port: String) {
@@ -40,5 +43,26 @@ class PcConnectionService {
                 print("ERROR! Error when data (Type: Data) sending. NWError: \n \(NWError!)")
             }
         }))
+    }
+    
+    class MessageId {
+        
+        private var queue = DispatchQueue(label: "udp.messageId")
+        private (set) var value: UInt16 = 0
+
+        func incrementAndGet() -> UInt16 {
+            queue.sync {
+                value += 1
+                return value
+            }
+        }
+        
+        func getAndIncrement() -> UInt16 {
+            queue.sync {
+                let temp = value
+                value += 1
+                return temp
+            }
+        }
     }
 }

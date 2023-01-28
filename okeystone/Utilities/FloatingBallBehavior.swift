@@ -17,7 +17,7 @@ class FloatingBallBehavior: UIDynamicBehavior
         let behavior = UIDynamicItemBehavior()
         behavior.allowsRotation = false
         behavior.elasticity = 0
-        behavior.resistance = 0
+        behavior.resistance = 0.5
         return behavior
     }()
     

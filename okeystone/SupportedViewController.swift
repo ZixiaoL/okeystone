@@ -105,7 +105,8 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
             alertController.addAction(cancelAction)
             alertController.addAction(copyAction)
             alertController.addAction(settingsAction)
-            
+            alertController.modalPresentationStyle = .automatic
+            alertController.popoverPresentationController?.sourceView = sender
             self.present(alertController, animated: true, completion: nil)
         })
     }
@@ -120,13 +121,14 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
         switch segue.identifier {
         case "showChooseMode":
             let vc = segue.destination as? ChooseModeViewController
-            let ipAndPort = ipPortTextField.text!.split(separator: ":")
-            vc?.scanResult = ScanResult(ssid: "unknown", password: "unknown", ip: String(ipAndPort[0]), port: String(ipAndPort[1]))
-            break
+            if (scanResult != nil) {
+                vc?.scanResult = scanResult
+            } else if let ipAndPort = ipPortTextField.text?.split(separator: ":") {
+                vc?.scanResult = ScanResult(ssid: "unknown", password: "unknown", ip: String(ipAndPort[0]), port: String(ipAndPort[1]))
+            }
         case "showScanView":
             let vc = segue.destination as? ScanViewController
             vc?.delegate = self
-            break
         default:
             break
         }
@@ -137,7 +139,7 @@ class SupportedViewController: UIViewController, UITableViewDelegate, UITableVie
 extension SupportedViewController: ScanViewControllerDelegate {
     func handleQRScanResult(result: String) {
         if let res = try? JSONDecoder().decode(ScanResult.self, from: Data(result.utf8)) {
-            ipPortTextField.text = "\(res.ip):\(res.port)"
+            scanResult = res
             navigationController?.popViewController(animated: true)
             performSegue(withIdentifier: "showChooseMode", sender: self)
         }
