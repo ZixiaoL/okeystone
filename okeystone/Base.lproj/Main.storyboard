@@ -237,13 +237,13 @@
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ChooseModeViewController" customModule="okeystone" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                    <view key="view" contentMode="redraw" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="nwv-iT-QS9" customClass="BackgroundView" customModule="okeystone" customModuleProvider="target">
                                 <rect key="frame" x="8" y="103" width="414" height="795"/>
-                                <color key="backgroundColor" red="0.74948841330000004" green="0.97967308760000005" blue="0.88705134389999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.68056446309999996" green="0.90089762210000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="组 86" translatesAutoresizingMaskIntoConstraints="NO" id="2yo-jZ-pz3">
                                 <rect key="frame" x="158" y="103" width="322" height="322"/>
@@ -252,8 +252,8 @@
                                     <constraint firstAttribute="width" constant="322" id="uWK-dL-H3X"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="连接成功！" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YSL-he-dTr">
-                                <rect key="frame" x="124.33333333333331" y="111" width="181.66666666666669" height="43"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设备连接中..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YSL-he-dTr">
+                                <rect key="frame" x="109.33333333333333" y="111" width="211.66666666666669" height="43"/>
                                 <fontDescription key="fontDescription" type="system" weight="black" pointSize="36"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="highlightedColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -301,7 +301,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="icon 3" id="9pe-7n-W6g">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="loading" highlightedImage="checkbox-circle-fill" id="9pe-7n-W6g">
                                                     <rect key="frame" x="20" y="15.333333333333336" width="24" height="24"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
@@ -333,7 +333,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="icon 3" id="rGi-Z9-TBj">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="loading" highlightedImage="checkbox-circle-fill" id="rGi-Z9-TBj">
                                                     <rect key="frame" x="20" y="15.333333333333336" width="24" height="24"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
@@ -355,14 +355,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="390" height="55"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="本设备名称" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Nh3-l2-L9G">
-                                                    <rect key="frame" x="59.000000000000007" y="9.9999999999999982" width="86.666666666666671" height="20.333333333333332"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="设备名称及描述" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Nh3-l2-L9G">
+                                                    <rect key="frame" x="58.999999999999993" y="9.9999999999999982" width="121.33333333333333" height="20.333333333333332"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="icon 3" id="Qfr-P7-8RC">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="loading" highlightedImage="checkbox-circle-fill" id="Qfr-P7-8RC">
                                                     <rect key="frame" x="20" y="15.333333333333336" width="24" height="24"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
@@ -384,14 +384,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="390" height="55"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="体感模式" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4rZ-RE-Y6c">
-                                                    <rect key="frame" x="58.999999999999993" y="9.9999999999999982" width="69.333333333333329" height="20.333333333333332"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="体感模式（需要在客户端配置）" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4rZ-RE-Y6c">
+                                                    <rect key="frame" x="58.999999999999986" y="9.9999999999999982" width="242.66666666666666" height="20.333333333333332"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="icon 3" id="Shn-6W-TLM">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="loading" highlightedImage="checkbox-circle-fill" id="Shn-6W-TLM">
                                                     <rect key="frame" x="20" y="15.333333333333336" width="24" height="24"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
@@ -412,22 +412,23 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="3lP-VZ-Smw">
                                 <rect key="frame" x="15" y="778" width="400" height="120"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vAQ-N8-n95">
-                                        <rect key="frame" x="0.0" y="0.0" width="400" height="56"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vAQ-N8-n95">
+                                        <rect key="frame" x="0.0" y="0.0" width="400" height="0.0"/>
                                         <color key="backgroundColor" red="0.02850000188" green="0.75666517020000001" blue="0.37493714690000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" weight="black" pointSize="24"/>
                                         <inset key="contentEdgeInsets" minX="100" minY="10" maxX="100" maxY="10"/>
-                                        <state key="normal" title="选择模式">
+                                        <state key="normal" title="查看设备实时状态">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
+                                            <action selector="deviceCurrentStatus:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gOd-RU-tcu"/>
                                             <segue destination="eqE-kD-Saf" kind="popoverPresentation" identifier="popOverChooseModePopOverViewController" popoverAnchorView="vAQ-N8-n95" id="g5e-zO-PrB">
                                                 <popoverArrowDirection key="popoverArrowDirection" down="YES"/>
                                             </segue>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Biw-Wy-J4T">
-                                        <rect key="frame" x="0.0" y="64" width="400" height="56"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="400" height="120"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <fontDescription key="fontDescription" type="system" weight="black" pointSize="24"/>
                                         <inset key="contentEdgeInsets" minX="100" minY="10" maxX="100" maxY="10"/>
@@ -466,7 +467,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="jhD-Xo-MNK"/>
                     <connections>
+                        <outlet property="backgroundView" destination="nwv-iT-QS9" id="knV-9Z-JIS"/>
+                        <outlet property="deviceCurrentStatus" destination="vAQ-N8-n95" id="Bed-JS-rhb"/>
                         <outlet property="instructions" destination="lJE-Lc-PgQ" id="fsx-OK-p8e"/>
+                        <outlet property="status" destination="YSL-he-dTr" id="TBc-Pa-pN3"/>
                         <segue destination="JPQ-Ot-UaT" kind="show" identifier="showBalanceModeViewController" id="ElE-HH-I6n"/>
                         <segue destination="DFK-qE-qn8" kind="show" identifier="showSteelingWheelModeViewController" id="IBJ-Xh-XSL"/>
                         <segue destination="Fpx-8s-lZQ" kind="show" identifier="showUserAccelerationModeViewController" id="qK5-4u-T7W"/>
@@ -690,7 +694,7 @@
                                                 </constraints>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="当前app已升级到最新版本" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXU-XA-Zm8">
-                                                <rect key="frame" x="114" y="186" width="202.33333333333337" height="20.333333333333343"/>
+                                                <rect key="frame" x="114.00000000000001" y="186" width="202.33333333333337" height="20.333333333333343"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -1160,17 +1164,18 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="JhY-OM-GeK"/>
+        <segue reference="Rym-Rj-hWg"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="22" width="198" height="186.33332824707031"/>
         <image name="Done" width="120" height="120"/>
+        <image name="checkbox-circle-fill" width="28" height="28"/>
         <image name="circle.fill" catalog="system" width="128" height="123"/>
         <image name="home-6-fill" width="24" height="24"/>
         <image name="icon" width="24" height="24"/>
         <image name="icon 1" width="24" height="24"/>
         <image name="icon 2" width="24" height="24"/>
-        <image name="icon 3" width="24" height="24"/>
+        <image name="loading" width="24" height="24"/>
         <image name="settings-fill" width="24" height="24"/>
         <image name="椭圆形备份" width="307" height="307"/>
         <image name="矩形 32" width="109.33333587646484" height="109.33333587646484"/>

@@ -8,6 +8,7 @@
 
 import UIKit
 import Network
+import NetworkExtension
 
 class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, ChooseModePopOverViewControllerDelegate {
     
@@ -26,6 +27,8 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    @IBOutlet weak var status: UILabel!
+    
     
     var scanResult: ScanResult? {
         didSet {
@@ -36,10 +39,39 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
     
     lazy var connection = PcConnectionService(scanResult!.ip, scanResult!.port)
     
+    @IBOutlet weak var deviceCurrentStatus: UIButton!
+    
+    @IBOutlet weak var backgroundView: BackgroundView!
+    
+    @IBAction func deviceCurrentStatus(_ sender: UIButton) {
+        handleModes(modeIndex: 3)
+    }
+    
+    var successfulStateCount = 0 {
+        didSet {
+            if(successfulStateCount == -1) {
+                status.text = "连接失败"
+                backgroundView.backgroundColor = UIColor(cgColor: #colorLiteral(red: 1, green: 0.8347119689, blue: 0.8241621852, alpha: 1))
+                deviceCurrentStatus.isHidden = true
+            } else if (successfulStateCount == 4) {
+                status.text = "连接成功！"
+                backgroundView.backgroundColor = UIColor(cgColor: #colorLiteral(red: 0.778111279, green: 0.9830670953, blue: 0.8974402547, alpha: 1))
+                deviceCurrentStatus.isHidden = false
+            }
+        }
+    }
+    
+    var successfulState = [0, 0, 0, 0] {
+        didSet {
+                instructions.reloadData()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         instructions.delegate = self
         instructions.dataSource = self
+        connectWifi(scanResult!.ssid, scanResult!.password)
     }
     
     @IBOutlet weak var instructions: UITableView!
@@ -67,17 +99,52 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
             break
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-        
         // Configure content.
         switch indexPath.section {
         case 0:
-            cell.detailTextLabel?.text = scanResult!.ssid
+            if(successfulState[0] == 0) {
+                cell.detailTextLabel?.text = "WIFI"
+                cell.imageView?.rotate()
+            } else if(successfulState[0] == 1) {
+                cell.imageView?.image = UIImage(named: "checkbox-circle-fill")
+                cell.detailTextLabel?.text = scanResult?.ssid
+            } else {
+                cell.imageView?.image = UIImage(named: "error-warning-fill")
+                cell.detailTextLabel?.text = scanResult?.ssid
+            }
         case 1:
-            cell.detailTextLabel?.text = scanResult!.ssid
+            if(successfulState[1] == 0) {
+                cell.detailTextLabel?.text = "电脑连接中"
+                cell.imageView?.rotate()
+            } else if(successfulState[1] == 1) {
+                cell.imageView?.image = UIImage(named: "checkbox-circle-fill")
+                cell.detailTextLabel?.text = scanResult?.ssid
+            } else {
+                cell.imageView?.image = UIImage(named: "error-warning-fill")
+                cell.detailTextLabel?.text = scanResult?.ssid
+            }
         case 2:
-            cell.detailTextLabel?.text = UIDevice.current.name
+            if(successfulState[2] == 0) {
+                cell.detailTextLabel?.text = "正在获取设备名称"
+                cell.imageView?.rotate()
+            } else if(successfulState[2] == 1) {
+                cell.imageView?.image = UIImage(named: "checkbox-circle-fill")
+                cell.detailTextLabel?.text = UIDevice.current.name
+            } else {
+                cell.imageView?.image = UIImage(named: "error-warning-fill")
+                cell.detailTextLabel?.text = "获取设备名称失败"
+            }
         case 3:
-            cell.detailTextLabel?.text = "deprecated?"
+            if(successfulState[3] == 0) {
+                cell.detailTextLabel?.text = "正在获取设备模式"
+                cell.imageView?.rotate()
+            } else if(successfulState[2] == 1) {
+                cell.imageView?.image = UIImage(named: "checkbox-circle-fill")
+                cell.detailTextLabel?.text = "方向盘模式"
+            } else {
+                cell.imageView?.image = UIImage(named: "error-warning-fill")
+                cell.detailTextLabel?.text = "获取设备模式失败"
+            }
         default:
             break
         }
@@ -123,6 +190,31 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
         + localIpBytes
         connection.sendUDP(header + body)
     }
+    
+    func connectWifi(_ ssid: String, _ password: String){
+        if #available(iOS 11.0, *) {
+            let hcg =  NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
+            NEHotspotConfigurationManager.shared.apply(hcg) { [weak self] (erro) in
+                if erro == nil {
+                    print("链接wifi成功")
+                    self?.successfulState[0] = 1
+                    self?.successfulState[1] = 1
+                    self?.successfulState[2] = 1
+                    self?.successfulState[3] = 1
+                    self?.successfulStateCount = 4
+                }else{
+                    print(erro?.localizedDescription ?? "未知错误")
+                    self?.successfulState[0] = -1
+                    self?.successfulState[1] = -1
+                    self?.successfulState[2] = 1
+                    self?.successfulState[3] = 1
+                    self?.successfulStateCount = -1
+                }
+            }
+        } else {
+            // 跳转至设置界面
+        }
+    }
 }
 
 // MARK: - QRScanDelegate
@@ -132,5 +224,16 @@ extension ChooseModeViewController: ScanViewControllerDelegate {
             self.scanResult = res
             navigationController?.popViewController(animated: true)
         }
+    }
+}
+
+extension UIView{
+    func rotate() {
+        let rotation : CABasicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotation.toValue = NSNumber(value: Double.pi * 2)
+        rotation.duration = 1
+        rotation.isCumulative = true
+        rotation.repeatCount = Float.infinity
+        self.layer.add(rotation, forKey: "rotationAnimation")
     }
 }
