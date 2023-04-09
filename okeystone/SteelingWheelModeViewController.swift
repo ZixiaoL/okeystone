@@ -25,6 +25,9 @@ class SteelingWheelModeViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var turnLeftLabel: UILabel!
+    @IBOutlet weak var turnRightLabel: UILabel!
+    
     var originalHeading: Double?
     
     var timer = Timer()
@@ -32,7 +35,7 @@ class SteelingWheelModeViewController: UIViewController {
     lazy var animator = UIDynamicAnimator(referenceView: view)
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()	
     }
     
     @IBOutlet weak var cover: UIView!

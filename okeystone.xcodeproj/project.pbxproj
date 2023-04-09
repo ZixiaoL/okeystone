@@ -39,6 +39,7 @@
 		DE1D8B3A2945B010009008A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE1D8B3D2945B010009008A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DE1D8B3F2945B010009008A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE2581B229CFD82A00BCBE3D /* okeystone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = okeystone.entitlements; sourceTree = "<group>"; };
 		DE3B17392954FEF100FF1756 /* FloatingBallBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBallBehavior.swift; sourceTree = "<group>"; };
 		DE3B173B29567A0F00FF1756 /* PcConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PcConnectionService.swift; sourceTree = "<group>"; };
 		DE3BEFBD2984C09F0095BB31 /* SteelingWheelModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteelingWheelModeViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +87,7 @@
 		DE1D8B302945B00C009008A8 /* okeystone */ = {
 			isa = PBXGroup;
 			children = (
+				DE2581B229CFD82A00BCBE3D /* okeystone.entitlements */,
 				DE1D8B312945B00C009008A8 /* AppDelegate.swift */,
 				DE1D8B3C2945B010009008A8 /* LaunchScreen.storyboard */,
 				DE1D8B372945B00C009008A8 /* Main.storyboard */,
@@ -353,6 +355,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = okeystone/okeystone.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RL67WJLAP;
@@ -374,6 +377,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = okeystone/okeystone.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RL67WJLAP;

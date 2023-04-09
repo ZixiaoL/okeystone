@@ -44,7 +44,7 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var backgroundView: BackgroundView!
     
     @IBAction func deviceCurrentStatus(_ sender: UIButton) {
-        handleModes(modeIndex: 3)
+        handleModes(modeIndex: 4)
     }
     
     var successfulStateCount = 0 {
@@ -52,7 +52,7 @@ class ChooseModeViewController: UIViewController, UITableViewDelegate, UITableVi
             if(successfulStateCount == -1) {
                 status.text = "连接失败"
                 backgroundView.backgroundColor = UIColor(cgColor: #colorLiteral(red: 1, green: 0.8347119689, blue: 0.8241621852, alpha: 1))
-                deviceCurrentStatus.isHidden = true
+                deviceCurrentStatus.isHidden = false
             } else if (successfulStateCount == 4) {
                 status.text = "连接成功！"
                 backgroundView.backgroundColor = UIColor(cgColor: #colorLiteral(red: 0.778111279, green: 0.9830670953, blue: 0.8974402547, alpha: 1))

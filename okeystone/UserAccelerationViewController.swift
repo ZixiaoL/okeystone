@@ -25,6 +25,10 @@ class UserAccelerationViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var highAcc1: UILabel!
+    @IBOutlet weak var highAcc2: UILabel!
+    @IBOutlet weak var lowAcc1: UILabel!
+    @IBOutlet weak var lowAcc2: UILabel!
     var timer = Timer()
     
     lazy var animator = UIDynamicAnimator(referenceView: view)
